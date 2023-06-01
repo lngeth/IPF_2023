@@ -1,3 +1,5 @@
+(* Question 1 *)
+
 type tformula =
 | Value of bool (* ⊥ ou � *)
 | Var of string (* Variable *)
@@ -10,3 +12,7 @@ type tformula =
 type decTree =
 | DecLeaf of bool
 | DecRoot of string * decTree * decTree;;
+
+(* Question 2 *)
+
+type env = (string*bool) list;;
