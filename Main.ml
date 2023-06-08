@@ -20,7 +20,6 @@ let rec getVars : Logique.tformula -> string list = fun f ->
 ;;
 
 assert ((getVars ex1) = ["P1"; "P2"; "Q1"; "Q2"]);;
-print_string "tout est bon\n";;
 
 (* Question 2 *)
 
@@ -32,15 +31,25 @@ let rec getvalue : Logique.env -> string -> bool = fun v s ->
         y
       else (getvalue r s);;
 
-      (*
-let evalFormula : Logique.env -> Logique.tformula -> bool = fun v -> fun f ->
+assert ((getvalue ["P1",false;"P2",false;"Q1",false;"Q2",false] "Q2") = false);;
+
+let rec evalFormula : Logique.env -> Logique.tformula -> bool = fun v f ->
   match f with
-    | Logique.Value x -> []
-    | Logique.Var x -> [x]
-    | Logique.Not x -> getVars x
-    | Logique.And (x, y) -> List.sort compare ((getVars x) @ (getVars y))
-    | Logique.Or (x, y) -> List.sort compare ((getVars x) @ (getVars y))
-    | Logique.Implies (x, y) -> List.sort compare ((getVars x) @ (getVars y))
-    | Logique.Equivalent (x, y) -> if 
-    ;;
-    *)
+  | Logique.Value x -> x
+  | Logique.Var x -> getvalue v x
+  | Logique.Not x -> not (evalFormula v x)
+  | Logique.And (x, y) -> (evalFormula v x) && (evalFormula v y)
+  | Logique.Or (x, y) -> (evalFormula v x) || (evalFormula v y)
+  | Logique.Implies (x, y) -> if ((evalFormula v x) && not (evalFormula v y)) then false else true
+  | Logique.Equivalent (x, y) -> if ((evalFormula v x) = (evalFormula v y)) then true else false;;
+
+assert ((evalFormula ["P1",false;"P2",false;"Q1",false;"Q2",false] ex1) = true);;
+
+(* Question 3 *)
+
+let rec buildDecTree : Logique.tformula -> Logique.decTree = fun f ->
+  let variables = (getVars f) in
+    match variables with
+      | [] -> failwith "empty formula"
+      | [e] -> Logique.DecRoot (e, (Logique.DecLeaf true), (Logique.DecLeaf false))
+      | e::r -> Logique.DecRoot (e, (buildDecTree r), (buildDecTree r));;
