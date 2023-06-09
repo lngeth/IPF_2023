@@ -16,3 +16,12 @@ type decTree =
 (* Question 2 *)
 
 type env = (string*bool) list;;
+
+(* Question 4 *)
+
+type bddNode =
+| BddLeaf of int * bool
+| BddNode of int * string * int * int;;
+
+type bdd = (int * (bddNode list));; (* un entier pour designer le noeud racine et
+la liste des noeuds *)

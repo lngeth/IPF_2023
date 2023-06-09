@@ -47,9 +47,23 @@ assert ((evalFormula ["P1",false;"P2",false;"Q1",false;"Q2",false] ex1) = true);
 
 (* Question 3 *)
 
+let rec getDecTree : string list -> Logique.decTree = fun l ->
+  match l with
+    | [] -> failwith "empty tree"
+    | [e] -> Logique.DecRoot (e, (Logique.DecLeaf true), (Logique.DecLeaf false))
+    | e::r -> Logique.DecRoot (e, getDecTree r, getDecTree r);;
+
 let rec buildDecTree : Logique.tformula -> Logique.decTree = fun f ->
-  let variables = (getVars f) in
-    match variables with
-      | [] -> failwith "empty formula"
-      | [e] -> Logique.DecRoot (e, (Logique.DecLeaf true), (Logique.DecLeaf false))
-      | e::r -> Logique.DecRoot (e, (buildDecTree r), (buildDecTree r));;
+  getDecTree (getVars f);;
+
+assert ((evalFormula ["P1",false;"P2",false;"Q1",false;"Q2",false] ex1) = true);;
+
+(* Question 4 *)
+
+let getBddTree : string list -> Logique.bdd = fun l ->
+  match l with
+    | [] -> Logique.bdd (0, [])
+    | e::r -> if (e )
+
+
+let buildBDD : Logique.tformula -> Logique.bdd = fun f -> getBddTree (getVars f);;
