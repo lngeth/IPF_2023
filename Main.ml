@@ -47,16 +47,31 @@ assert ((evalFormula ["P1",false;"P2",false;"Q1",false;"Q2",false] ex1) = true);
 
 (* Question 3 *)
 
+(* A mettre dans un fichier utils *)
+let rec print_tuples =
+  function
+  | [] -> ()
+  | (a, b) :: rest ->
+    Printf.printf "\n(%s, %b);" a b;
+    print_tuples rest;;
+
 let rec getDecTree : Logique.tformula -> string list -> Logique.env -> Logique.decTree = fun f -> fun l -> fun v ->
   match l with
     | [] -> failwith "empty tree"
-    | [e] -> DecRoot (e, DecLeaf (evalFormula v f), DecLeaf (evalFormula v f))
-    | e::r -> DecRoot (e, (getDecTree f r (v@[(e, false)])), (getDecTree f r (v@[(e, true)])));;
+    | [e] -> 
+      let evalValueGauche = (evalFormula (v@[(e, false)]) f) in
+        let evalValueDroit = (evalFormula (v@[(e, true)]) f) in
+          Logique.DecRoot (e, Logique.DecLeaf evalValueGauche, Logique.DecLeaf evalValueDroit)
+    | e::r -> 
+      let newVGauche = (v@[(e, false)]) in
+        let newVDroit = (v@[(e, true)]) in
+          Logique.DecRoot (e, (getDecTree f r newVGauche), (getDecTree f r newVDroit));;
 
 let rec buildDecTree : Logique.tformula -> Logique.decTree = fun f ->
   getDecTree f (getVars f) [];;
 
-assert ((evalFormula ["P1",false;"P2",false;"Q1",false;"Q2",false] ex1) = true);;
+let test_print_buildDecTree = buildDecTree ex1 in
+  print_string "ok";;
 
 (* Question 4 *)
 
