@@ -47,14 +47,14 @@ assert ((evalFormula ["P1",false;"P2",false;"Q1",false;"Q2",false] ex1) = true);
 
 (* Question 3 *)
 
-let rec getDecTree : string list -> Logique.decTree = fun l ->
+let rec getDecTree : Logique.tformula -> string list -> Logique.env -> Logique.decTree = fun f -> fun l -> fun v ->
   match l with
     | [] -> failwith "empty tree"
-    | [e] -> Logique.DecRoot (e, (Logique.DecLeaf true), (Logique.DecLeaf false))
-    | e::r -> Logique.DecRoot (e, getDecTree r, getDecTree r);;
+    | [e] -> DecRoot (e, DecLeaf (evalFormula v f), DecLeaf (evalFormula v f))
+    | e::r -> DecRoot (e, (getDecTree f r (v@[(e, false)])), (getDecTree f r (v@[(e, true)])));;
 
 let rec buildDecTree : Logique.tformula -> Logique.decTree = fun f ->
-  getDecTree (getVars f);;
+  getDecTree f (getVars f) [];;
 
 assert ((evalFormula ["P1",false;"P2",false;"Q1",false;"Q2",false] ex1) = true);;
 
