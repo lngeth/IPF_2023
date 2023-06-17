@@ -1,11 +1,14 @@
 all: clean main
 
-main: Logique.cmx Main.cmx
-	ocamlopt -o main $^
-	./main
+main: obj/Logique.cmx obj/Main.cmx
+	ocamlopt -o obj/main $^
+	./obj/main
 
-%.cmx: %.ml
-	ocamlopt -c $^
+%.cmx: src/%.ml
+	ocamlopt -o obj/$@ -c $^
+
+%.cmx: src/utils/%.ml
+	ocamlopt -o obj/$@ -c $^
 
 clean:
-	rm -f *.cmx *.cmi *.o
+	rm -f obj/*.cmx obj/*.cmi obj/*.o
