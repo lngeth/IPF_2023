@@ -1,6 +1,6 @@
 all: clean obj/main exec
 
-windows: clean_windows obj/main exec
+windows: obj/main exec
 
 obj/main: obj/Logique.cmo obj/Main.cmo
 	ocamlc -o obj/main $^
@@ -21,6 +21,6 @@ clean:
 	rm -f obj/*.cmo obj/*.cmi obj/main
 
 clean_windows:
-	powershell -Command "Remove-Item -Force -ErrorAction SilentlyContinue obj/*.cmi"
-	powershell -Command "Remove-Item -Force -ErrorAction SilentlyContinue obj/*.cmo"
-	powershell -Command "Remove-Item -Force -ErrorAction SilentlyContinue obj/main"
+	del .\obj\*.cmi
+	del .\obj\*.cmo
+	del .\obj\main
