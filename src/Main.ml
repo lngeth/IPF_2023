@@ -22,6 +22,8 @@ let rec getVars : tformula -> string list = fun f ->
 ;;
 
 assert ((getVars ex1) = ["P1"; "P2"; "Q1"; "Q2"]);;
+assert ((getVars f1) = ["Q1"; "Q2"]);;
+assert ((getVars f2) = ["P1"; "P2"]);;
 
 (* Question 2 *)
 

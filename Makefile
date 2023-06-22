@@ -1,14 +1,23 @@
-all: clean main
+all: clean obj/main exec
 
-main: obj/Logique.cmx obj/Main.cmx
-	ocamlopt -o obj/main $^
+windows: clean_windows obj/main exec
+
+exec:
 	./obj/main
 
-%.cmx: src/%.ml
-	ocamlopt -o obj/$@ -c $^
+obj/main: obj/Logique.cmo obj/Main.cmo
+	ocamlc -o obj/main $^
 
-%.cmx: src/utils/%.ml
-	ocamlopt -o obj/$@ -c $^
+obj/Main.cmo: src/Main.ml
+	ocamlc -o $@ -c $^ -I obj
+
+obj/Logique.cmo: src/utils/Logique.ml
+	ocamlc -o $@ -c $^
 
 clean:
-	rm -f obj/*.cmx obj/*.cmi obj/*.o
+	rm -f obj/*.cmo obj/*.cmi obj/main
+
+clean_windows:
+	powershell -Command "Remove-Item -Force -ErrorAction SilentlyContinue obj/*.cmi"
+	powershell -Command "Remove-Item -Force -ErrorAction SilentlyContinue obj/*.cmo"
+	powershell -Command "Remove-Item -Force -ErrorAction SilentlyContinue obj/main"

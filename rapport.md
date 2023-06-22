@@ -13,35 +13,52 @@ Tous les fichiers générés par la compilation, ainsi que l'éxécutable se tro
 
 ### Exercice 1
 
-#### Type
+#### Fonctions + Interface
+
+val **getVars** : tformula -> string list  
+  
+Retourne les variables d'une formule passée en paramètre, rangés par ordre alphabétique.
+
 #### Cas de tests
+
+- (Q1 ⇔ Q2) ∧ (P1 ⇔ P2) 
+assert ((getVars ex1) = ["P1"; "P2"; "Q1"; "Q2"])
+
+- (Q1 ⇔ Q2)
+assert ((getVars f1) = ["Q1"; "Q2"])
+
+- (P1 ⇔ P2)
+assert ((getVars f2) = ["P1"; "P2"])
 
 ### Exercice 2
 
-#### Type
+#### Fonctions + Interface
+
+val evalFormula : env -> tformula -> bool
+
 #### Cas de tests
 
 ### Exercice 3
 
-#### Type
+#### Fonctions + Interface
 #### Cas de tests
 
 ### Exercice 4
 
-#### Type
+#### Fonctions + Interface
 #### Cas de tests
 
 ### Exercice 5
 
-#### Type
+#### Fonctions + Interface
 #### Cas de tests
 
 ### Exercice 6
 
-#### Type
+#### Fonctions + Interface
 #### Cas de tests
 
 ### Exercice 7
 
-#### Type
+#### Fonctions + Interface
 #### Cas de tests
