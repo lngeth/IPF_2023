@@ -46,10 +46,10 @@ let rec evalFormula : env -> tformula -> bool = fun v f ->
     | Implies (x, y) -> if ((evalFormula v x) && not (evalFormula v y)) then false else true
     | Equivalent (x, y) -> if ((evalFormula v x) = (evalFormula v y)) then true else false;;
 
-assert ((evalFormula ["P1",false;"P2",false;"Q1",false;"Q2",false] ex1) = true);;
-assert ((evalFormula ["P1",false;"P2",false;"Q1",false;"Q2",true] ex1) = false);;
-assert ((evalFormula ["P1",false;"P2",false;"Q1",true;"Q2",false] ex1) = false);;
-assert ((evalFormula ["P1",false;"P2",false;"Q1",true;"Q2",true] ex1) = true);;
+assert ((evalFormula ["P1",false;"P2",false;"Q1",false;"Q2",false] ex1));;
+assert (not (evalFormula ["P1",false;"P2",false;"Q1",false;"Q2",true] ex1));;
+assert (not (evalFormula ["P1",false;"P2",false;"Q1",true;"Q2",false] ex1));;
+assert ((evalFormula ["P1",false;"P2",false;"Q1",true;"Q2",true] ex1));;
 
 (* Question 3 *)
 
@@ -115,6 +115,12 @@ let rec getNumOfSpecificBddNode : bddNode -> (bddNode list) -> int = fun n -> fu
                 )
 ;;
 
+assert ((getNumOfSpecificBddNode (BddLeaf (15, true)) [BddNode (10, "P1", 8, 9); BddNode (9, "P2", 7, 5);
+BddNode (8, "P2", 5, 7); BddNode (7, "Q1" ,6 ,6);
+BddNode (6, "Q2", 2, 2); BddNode (5, "Q1", 3 ,4);
+BddNode (4, "Q2", 2, 1); BddNode (3, "Q2", 1, 2); BddLeaf (2 , false);
+BddLeaf (1, true)]) = 1);;
+
 (* Fonction qui vérifie si un bddNode est dans une liste de bddNode*)
 let rec isBddNodeExist : bddNode -> (bddNode list) -> bool = fun n -> fun l ->
     match l with
@@ -163,6 +169,10 @@ let getNewBdd : bddNode -> bdd -> (int * bdd) = fun n -> fun b ->
         else ((getNumOfSpecificBddNode n actualList), b)) in
     (numRes, finalBdd)
 ;;
+
+assert ((getNewBdd (BddLeaf (2 , false)) (1, [BddLeaf (1, true)])) = (2, ((2, [BddLeaf (2 , false);
+BddLeaf (1, true)]):bdd)));;
+assert ((getNewBdd (BddLeaf (1 , true)) (1, [BddLeaf (1, true)])) = (1, ((1, [BddLeaf (1, true)]):bdd)));;
 
 let rec getBdd : tformula -> string list -> env -> bdd -> int * bdd = fun f -> fun l -> fun v -> fun b ->
     match l with
@@ -233,7 +243,9 @@ let print_testBDD = buildBdd ex1 in
 
 (* Question 5 *)
 
-(* numNodeRemoved * numNodeSuccessor *)
+(* numNodeRemoved = numéro du noeud enlevée
+   numNodeSuccessor = numéro du sucesseur (fils gauche et droit pareil) du noeud à enlever
+*)
 let rec removeNodeFromList : bddNode -> (bddNode list) -> (int * int * (bddNode list)) = fun nodeTr -> fun l ->
     match l with
         | [] -> (0, 0, l)
@@ -270,6 +282,9 @@ let rec removeNodeFromList : bddNode -> (bddNode list) -> (int * int * (bddNode 
                     )
             )
 ;;
+
+assert((removeNodeFromList (BddNode (3, "Q2", 2, 2)) [BddNode (3, "Q2", 2, 2); BddLeaf (2, false); BddLeaf (1, true)]) = (3, 2, [BddLeaf (2, false); BddLeaf (1, true)]));;
+assert((removeNodeFromList (BddNode (3, "Q2", 2, 2)) [BddNode (3, "Q2", 1, 2); BddLeaf (2, false); BddLeaf (1, true)]) = (0, 0, [BddNode (3, "Q2", 1, 2); BddLeaf (2, false); BddLeaf (1, true)]));;
 
 let removeNodeFromBdd : bddNode -> (bddNode list) -> bdd = fun n -> fun l ->
     let _, _, newList = removeNodeFromList n l in
@@ -312,6 +327,7 @@ BddNode (5, "Q1", 3, 4); BddNode (4, "Q2", 2, 1); BddNode (3, "Q2", 1, 2);
 BddLeaf (2, false); BddLeaf (1, true)])
 );;
 
+(* Test d'affichage de la bdd simplifiée *)
 let test_simplifiedBdd = (simplifyBDD (buildBdd ex1)) in
     let numRoot, l = test_simplifiedBdd in 
     let _ = Printf.printf "Root : %d\n" numRoot in print_buildBdd l
@@ -337,8 +353,8 @@ let isTautology : tformula -> bool = fun f ->
 ;;
 
 let exTautology = Equivalent (Implies (p1, q1), Or (Not p1, q1));; (*  (P ⇒ Q) ⇔ (¬P ∨ Q)   *)
-assert ((isTautology ex1) = false);;
 assert ((isTautology exTautology) = true);;
+assert ((isTautology ex1) = false);;
 
 (* Question 7 *)
 

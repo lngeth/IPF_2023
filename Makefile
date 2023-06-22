@@ -2,9 +2,6 @@ all: clean obj/main exec
 
 windows: clean_windows obj/main exec
 
-exec:
-	./obj/main
-
 obj/main: obj/Logique.cmo obj/Main.cmo
 	ocamlc -o obj/main $^
 
@@ -13,6 +10,12 @@ obj/Main.cmo: src/Main.ml
 
 obj/Logique.cmo: src/utils/Logique.ml
 	ocamlc -o $@ -c $^
+
+debug:
+	obj/main exec
+
+exec:
+	./obj/main
 
 clean:
 	rm -f obj/*.cmo obj/*.cmi obj/main

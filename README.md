@@ -28,6 +28,10 @@ make
 ```sh
 make windows
 ```
+En cas de de problème avec la suppression des fichiers, exécuter la commande suivante :
+```sh
+make debug
+```
 
 ## Auteur
 
